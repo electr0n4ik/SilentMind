@@ -4,17 +4,17 @@ NULLABLE = {'blank': True, 'null': True}
 
 
 class Course(models.Model):
-
-    name = models.CharField(
+    """ViewSets"""
+    title = models.CharField(
         max_length=127,
-        verbose_name='Название')
-    description = models.CharField(
+        verbose_name='название')
+    description = models.TextField(
         max_length=255,
-        verbose_name='Описание')
+        verbose_name='описание')
     preview = models.ImageField(
         **NULLABLE,
         upload_to='knowledge/images',
-        verbose_name='Картинка')
+        verbose_name='картинка')
 
     def __str__(self):
         return f"Курс {self.name}"
@@ -25,6 +25,7 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    """Generic-classes"""
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(
         max_length=127,
