@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from knowledge.models import Course
+from knowledge.models import Course, Lesson
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -9,3 +9,9 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = '__all__'
 
+
+class LessonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lesson
+        fields = '__all__'

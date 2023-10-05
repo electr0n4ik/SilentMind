@@ -27,21 +27,21 @@ class Course(models.Model):
 class Lesson(models.Model):
     """Generic-classes"""
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    name = models.CharField(
+    title = models.CharField(
         max_length=127,
-        verbose_name='Название')
+        verbose_name='название')
     description = models.CharField(
         max_length=255,
-        verbose_name='Описание')
+        verbose_name='описание')
     preview = models.ImageField(
         **NULLABLE,
         upload_to='knowledge/images',
-        verbose_name='Картинка')
-    url_video = models.URLField(**NULLABLE, verbose_name='Ссылка на видео')
+        verbose_name='картинка')
+    url_video = models.URLField(**NULLABLE, verbose_name='ссылка на видео')
 
     def __str__(self):
-        return f"Урок {self.name}"
+        return f"урок {self.name}"
 
     class Meta:
-        verbose_name = 'Урок'
-        verbose_name_plural = 'Уроки'
+        verbose_name = 'урок'
+        verbose_name_plural = 'уроки'
