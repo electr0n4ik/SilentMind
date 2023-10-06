@@ -17,11 +17,11 @@ class Course(models.Model):
         verbose_name='картинка')
 
     def __str__(self):
-        return f"Курс {self.name}"
+        return f"курс {self.title}"
 
     class Meta:
-        verbose_name = 'Курс'
-        verbose_name_plural = 'Курсы'
+        verbose_name = 'курс'
+        verbose_name_plural = 'курсы'
 
 
 class Lesson(models.Model):
@@ -40,7 +40,7 @@ class Lesson(models.Model):
     url_video = models.URLField(**NULLABLE, verbose_name='ссылка на видео')
 
     def __str__(self):
-        return f"урок {self.name}"
+        return f"урок {self.title}"
 
     class Meta:
         verbose_name = 'урок'
