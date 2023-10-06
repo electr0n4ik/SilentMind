@@ -6,39 +6,54 @@ from knowledge.models import Course, Lesson, Payment
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        superuser = User.objects.create(
+            email='superuser@gmail.com'
+        )
 
-        category_list = [
-            {'name': 'Фрукты', 'description': 'Обычно сладкие'},
-            {'name': 'Овощи', 'description': 'Растут на грядках'},
+        superuser.set_password('superuser')
+        superuser.save()
+
+        manager = User.objects.create(
+            email='manager@gmail.com',
+        )
+
+        manager.set_password('manager')
+        manager.save()
+
+        user1 = User.objects.create(
+            email='user1@gmail.com',
+        )
+
+        user1.set_password('user1')
+        user1.save()
+
+        user2 = User.objects.create(
+            email='user2@gmail.com',
+        )
+
+        user2.set_password('user2')
+        user2.save()
+
+        course_list = [
+            {'title': 'Python-Dev', 'description': 'SkyPro - лучшие курсы', "preview": ""},
+            {'title': 'Python-QA', 'description': 'SkyPro - лучшие тесты', "preview": ""}
         ]
 
-        product_list = [
-            {'name': 'Апельсин', 'description': 'Сладкий и оранжевый', "photo": "catalog/апельсин.png", "price": 100,
-             "category_id": 1},
-            {'name': 'Яблоко', 'description': 'Кислый и зеленый', "photo": "catalog/яблоко.jpeg", "price": 200,
-             "category_id": 1},
-            {'name': 'помидора', 'description': 'Красная', "photo": "catalog/помидора.png", "price": 300,
-             "category_id": 2},
+        lesson_list = [
+            {'course': 1, 'title': '1 урок Python-Dev', 'description': 'SkyPro - лучшие уроки', "preview": ""},
+            {'course': 2, 'title': '1 урок Python-QA', 'description': 'SkyPro - лучшие тестовые уроки', "preview": ""}
         ]
 
-        blog_entry_list = [
-            {'title': 'Первая запись', 'slug': 'pervaya-zapis', 'content': 'Содержимое первой записи блога',
-             'preview': 'blog/апельсин.png', 'is_published': True, 'view_count': 10},
-            {'title': 'Вторая запись', 'slug': 'vtoraya-zapis', 'content': 'Содержимое второй записи блога',
-             'preview': 'blog/помидора.png', 'is_published': True, 'view_count': 20},
-            {'title': 'Третья запись', 'slug': 'tretaya-zapis', 'content': 'Содержимое третьей записи блога',
-             'preview': 'blog/яблоко.jpeg', 'is_published': False, 'view_count': 5},
-            {'title': 'Четвертая запись', 'slug': 'chetvertaya-zapis', 'content': 'Содержимое четвертой записи блога',
-             'preview': 'blog/4.png', 'is_published': True, 'view_count': 15},
-            {'title': 'Пятая запись', 'slug': 'pyataya-zapis', 'content': 'Содержимое пятой записи блога',
-             'preview': 'blog/5.png', 'is_published': True, 'view_count': 8},
+        payment_list = [
+            {'user': 1, 'data_pay': '2023-10-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "cash"},
+            {'user': 2, 'data_pay': '2023-09-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "non_cash"}
         ]
 
-        for element in category_list:
-            Category.objects.create(**element)
+        for element in course_list:
+            Course.objects.create(**element)
 
-        for element in product_list:
-            Product.objects.create(**element)
+        for element in lesson_list:
+            Lesson.objects.create(**element)
 
-        for element in blog_entry_list:
-            Blog.objects.create(**element)
+        for element in payment_list:
+            Payment.objects.create(**element)
