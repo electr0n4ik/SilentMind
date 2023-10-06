@@ -60,7 +60,7 @@ class Payment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     value_pay = models.IntegerField(verbose_name="сумма оплаты")
-    method_pay = models.BooleanField(choices=METHOD_CHOICES, verbose_name="способ оплаты")
+    method_pay = models.BooleanField(choices=METHOD_CHOICES, verbose_name="способ оплаты", blank=True, null=True)
 
     def __str__(self):
         return f"{self.lesson if self.lesson else self.course}"

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from knowledge.models import Course, Lesson
+from knowledge.models import Course, Lesson, Payment
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -22,4 +22,10 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
+        fields = '__all__'
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
         fields = '__all__'

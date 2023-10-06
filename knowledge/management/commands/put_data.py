@@ -45,8 +45,8 @@ class Command(BaseCommand):
         ]
 
         payment_list = [
-            {'user': 1, 'data_pay': '2023-10-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "cash"},
-            {'user': 2, 'data_pay': '2023-09-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "non_cash"}
+            {'user': 1, 'data_pay': '2023-10-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "cash"},  # TODO "method_pay": "cash"
+            {'user': 2, 'data_pay': '2023-09-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "non_cash"}  # TODO "method_pay": "non_cash"
         ]
 
         for element in course_list:
