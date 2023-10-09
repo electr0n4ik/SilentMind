@@ -8,7 +8,10 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
-        validators = [TitleValidator(field='title')]
+        validators = [
+            TitleValidator(field='title'),
+            serializers.UniqueTogetherValidator(fields=['title'], queryset=Lesson.objects.all())
+        ]
 
 
 class CourseSerializer(serializers.ModelSerializer):
