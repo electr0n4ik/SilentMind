@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from knowledge.models import Course, Lesson, Payment, CourseSubscription
+from knowledge.paginators import MyPagination
 from knowledge.permissions import IsOwnerOrStaff
 from knowledge.serializers import CourseSerializer, LessonSerializer, \
     PaymentSerializer  # , CourseSubscriptionSerializer
@@ -14,6 +15,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet для работы с моделью."""
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    pagination_class = MyPagination
 
     # permission_classes = [IsAuthenticated]  # доступ для авторизованных пользователей
     def get_serializer_context(self):
@@ -76,6 +78,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsOwnerOrStaff]
+    pagination_class = MyPagination
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
