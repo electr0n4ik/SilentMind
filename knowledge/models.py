@@ -6,12 +6,6 @@ from users.models import User
 NULLABLE = {'blank': True, 'null': True}
 
 
-# Для сохранения уроков и курсов реализуйте дополнительную проверку
-# на отсутствие в материалах ссылок на сторонние ресурсы,
-# кроме youtube.com.
-#
-# То есть ссылки на видео можно прикреплять в материалы,
-# а ссылки на сторонние образовательные платформы или личные сайты — нельзя.
 class Course(models.Model):
     """ViewSets"""
     title = models.CharField(
@@ -78,9 +72,11 @@ class Payment(models.Model):
         verbose_name = 'оплата'
         verbose_name_plural = 'оплата'
 
-# Добавьте модель подписки на обновления курса для пользователя.
-#
-# Вам необходимо реализовать эндпоинт для установки подписки пользователя и на удаление подписки у пользователя.
-#
+
+class CourseSubscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    subscribed = models.BooleanField(default=True)
+
 # При этом при выборке данных по курсу пользователю необходимо присылать признак подписки текущего пользователя на курс.
 # То есть давать информацию, подписан пользователь на обновления курса или нет.

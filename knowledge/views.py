@@ -1,33 +1,65 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from knowledge.models import Course, Lesson, Payment
+from knowledge.models import Course, Lesson, Payment, CourseSubscription
 from knowledge.permissions import IsOwnerOrStaff
-from knowledge.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
+from knowledge.serializers import CourseSerializer, LessonSerializer, \
+    PaymentSerializer  # , CourseSubscriptionSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet для работы с моделью."""
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+
     # permission_classes = [IsAuthenticated]  # доступ для авторизованных пользователей
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['user'] = self.request.user
+        return context
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ['list', 'update']:
-            permission_classes = [IsOwnerOrStaff]
+    def list(self, request, *args, **kwargs):
+        # Получите список курсов
+        queryset = self.get_queryset()
+        serializer = CourseSerializer(queryset, many=True, context={'request': request})
 
-        return [permission() for permission in permission_classes]
+        # Пройдитесь по каждому курсу и добавьте статус подписки
+        for course_data in serializer.data:
+            course = Course.objects.get(pk=course_data['id'])
+            user = request.user
+            is_subscribed = CourseSubscription.objects.filter(user=user, course=course).exists()
+            course_data['is_subscribed'] = is_subscribed
 
-    # def update(self, request, *args, **kwargs):
-    #     super().update()
+        return Response(serializer.data)
 
-    # def create(self, request, *args, **kwargs):
-    #     super().create()
+    def sub(self, request, pk=None):
+        # Установка подписки пользователя на курс
+        course = self.get_object()
+        user = request.user
+
+        # Проверяем, не подписан ли пользователь уже на этот курс
+        if CourseSubscription.objects.filter(user=user, course=course).exists():
+            return Response({"detail": "User is already subscribed to this course"}, status=status.HTTP_400_BAD_REQUEST)
+
+        subscription = CourseSubscription(user=user, course=course)
+        subscription.save()
+        return Response({"detail": "Subscription created"}, status=status.HTTP_201_CREATED)
+
+    def unsub(self, request, pk=None):
+        # Удаление подписки пользователя на курс
+        course = self.get_object()
+        user = request.user
+
+        try:
+            subscription = CourseSubscription.objects.get(user=user, course=course)
+        except CourseSubscription.DoesNotExist:
+            return Response({"detail": "User is not subscribed to this course"}, status=status.HTTP_400_BAD_REQUEST)
+
+        subscription.delete()
+        return Response({"detail": "Subscription deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -71,3 +103,16 @@ class PaymentListAPIView(generics.ListAPIView):
 
 class PaymentCreateAPIView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
+
+# class CourseSubscriptionCreateAPIView(generics.CreateAPIView):
+#     serializer_class = CourseSubscriptionSerializer
+#     permission_classes = [IsAuthenticated]
+#
+#     def perform_create(self, serializer):
+#         new_sub = serializer.save()
+#         new_sub.owner = self.request.course
+#         new_sub.save()
+#
+#
+# class CourseSubscriptionDestroyAPIView(generics.DestroyAPIView):
+#     queryset = CourseSubscription.objects.all()
