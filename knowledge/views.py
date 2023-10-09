@@ -26,6 +26,9 @@ class CourseViewSet(viewsets.ModelViewSet):
     # def update(self, request, *args, **kwargs):
     #     super().update()
 
+    # def create(self, request, *args, **kwargs):
+    #     super().create()
+
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer

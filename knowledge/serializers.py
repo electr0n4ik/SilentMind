@@ -1,16 +1,17 @@
 from rest_framework import serializers
 
 from knowledge.models import Course, Lesson, Payment
+from knowledge.validators import TitleValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
+        validators = [TitleValidator(field='title')]
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    """Для модели курса добавьте в сериализатор поле вывода количества уроков."""
     lesson_count = serializers.SerializerMethodField()
     # lesson = LessonSerializer(source='lesson_set', many=True)
 
