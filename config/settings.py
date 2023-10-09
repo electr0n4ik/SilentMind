@@ -143,7 +143,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated', # доступ только для авторизованных пользователей
+        'rest_framework.permissions.AllowAny',  # доступ для всех
     ]
 
 }
