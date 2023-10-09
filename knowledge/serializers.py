@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from knowledge.models import Course, Lesson, Payment
-from knowledge.validators import TitleValidator
+from knowledge.validators import TitleValidator, UrlYouTubeValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -10,7 +10,8 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = '__all__'
         validators = [
             TitleValidator(field='title'),
-            serializers.UniqueTogetherValidator(fields=['title'], queryset=Lesson.objects.all())
+            serializers.UniqueTogetherValidator(fields=['title'], queryset=Lesson.objects.all()),
+            UrlYouTubeValidator(field='url_video')
         ]
 
 

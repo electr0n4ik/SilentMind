@@ -5,6 +5,7 @@ from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
 
+
 # Для сохранения уроков и курсов реализуйте дополнительную проверку
 # на отсутствие в материалах ссылок на сторонние ресурсы,
 # кроме youtube.com.
@@ -76,7 +77,6 @@ class Payment(models.Model):
     class Meta:
         verbose_name = 'оплата'
         verbose_name_plural = 'оплата'
-
 
 # Добавьте модель подписки на обновления курса для пользователя.
 #
