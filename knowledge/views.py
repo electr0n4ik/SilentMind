@@ -4,7 +4,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from knowledge.models import Course, Lesson, Payment
-from knowledge.permissions import IsStaff
+from knowledge.permissions import IsOwnerOrStaff
 from knowledge.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
 
 
@@ -19,19 +19,28 @@ class CourseViewSet(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         """
         if self.action in ['list', 'update']:
-            permission_classes = [IsStaff]
+            permission_classes = [IsOwnerOrStaff]
 
         return [permission() for permission in permission_classes]
+
+    # def update(self, request, *args, **kwargs):
+    #     super().update()
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        new_lesson = serializer.save()
+        new_lesson.owner = self.request.user
+        new_lesson.save()
 
 
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsStaff]
+    permission_classes = [IsOwnerOrStaff]
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
@@ -42,7 +51,7 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsStaff]
+    permission_classes = [IsOwnerOrStaff]
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):

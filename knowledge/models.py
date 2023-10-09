@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from users.models import User
@@ -17,6 +18,7 @@ class Course(models.Model):
         **NULLABLE,
         upload_to='knowledge/images',
         verbose_name='картинка')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"курс {self.title}"
@@ -40,6 +42,7 @@ class Lesson(models.Model):
         upload_to='knowledge/images',
         verbose_name='картинка')
     url_video = models.URLField(**NULLABLE, verbose_name='ссылка на видео')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"урок {self.title}"
