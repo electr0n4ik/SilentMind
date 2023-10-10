@@ -103,6 +103,11 @@ class PaymentListAPIView(generics.ListAPIView):
     filterset_fields = ('course', 'lesson', 'method_pay')
     ordering_fields = ('data_pay',)
 
+    def perform_create(self, serializer):
+        new_payment = serializer.save()
+        new_payment.owner = self.request.user
+        new_payment.save()
+
 
 class PaymentCreateAPIView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
