@@ -66,7 +66,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         new_lesson = serializer.save()
@@ -76,9 +76,9 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
-    queryset = Lesson.objects.all()
+    queryset = Lesson.objects.all()  # .order_by('-id')
     permission_classes = [IsOwnerOrStaff]
-    pagination_class = MyPagination
+    # pagination_class = MyPagination
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):

@@ -5,9 +5,11 @@ from knowledge.validators import TitleValidator, UrlYouTubeValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Lesson
         fields = '__all__'
+
         validators = [
             TitleValidator(field='title'),
             serializers.UniqueTogetherValidator(fields=['title'], queryset=Lesson.objects.all()),

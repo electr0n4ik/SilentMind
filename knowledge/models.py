@@ -77,6 +77,3 @@ class CourseSubscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     subscribed = models.BooleanField(default=True)
-
-# При этом при выборке данных по курсу пользователю необходимо присылать признак подписки текущего пользователя на курс.
-# То есть давать информацию, подписан пользователь на обновления курса или нет.

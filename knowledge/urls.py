@@ -21,7 +21,7 @@ urlpatterns = [
                   path('lesson/', views.LessonListAPIView.as_view(), name='lesson-list'),
                   path('lesson/<int:pk>/', views.LessonRetrieveAPIView.as_view(), name='lesson-once'),
                   path('lesson/update/<int:pk>/', views.LessonUpdateAPIView.as_view(), name='lesson-upd'),
-                  path('lesson/dalete/<int:pk>/', views.LessonDestroyAPIView.as_view(), name='lesson-del'),
+                  path('lesson/delete/<int:pk>/', views.LessonDestroyAPIView.as_view(), name='lesson-del'),
 
                   path('payment/', views.PaymentListAPIView.as_view(), name='payment-list'),
                   path('payment/create/', views.PaymentCreateAPIView.as_view(), name='payment-create'),
