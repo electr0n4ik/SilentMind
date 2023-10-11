@@ -1,4 +1,6 @@
 from django.core.management import BaseCommand
+from django.utils import timezone
+
 from users.models import User
 from knowledge.models import Course, Lesson, Payment
 
@@ -6,34 +8,29 @@ from knowledge.models import Course, Lesson, Payment
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        superuser = User.objects.create(
+        superuser, _ = User.objects.get_or_create(
             email='superuser@gmail.com',
-            is_superuser='True',
-            is_staff='True',
+            defaults={'is_superuser': True, 'is_staff': True}
         )
-
         superuser.set_password('superuser')
         superuser.save()
 
-        manager = User.objects.create(
+        manager, _ = User.objects.get_or_create(
             email='manager@gmail.com',
-            is_staff='True',
+            defaults={'is_staff': True}
         )
-
         manager.set_password('manager')
         manager.save()
 
-        user1 = User.objects.create(
-            email='user1@gmail.com',
+        user1, _ = User.objects.get_or_create(
+            email='user1@gmail.com'
         )
-
         user1.set_password('user1')
         user1.save()
 
-        user2 = User.objects.create(
-            email='user2@gmail.com',
+        user2, _ = User.objects.get_or_create(
+            email='user2@gmail.com'
         )
-
         user2.set_password('user2')
         user2.save()
 
@@ -41,22 +38,29 @@ class Command(BaseCommand):
             {'title': 'Python-Dev', 'description': 'SkyPro - лучшие курсы', "preview": ""},
             {'title': 'Python-QA', 'description': 'SkyPro - лучшие тесты', "preview": ""}
         ]
-
-        lesson_list = [
-            {'course': 1, 'title': '1 урок Python-Dev', 'description': 'SkyPro - лучшие уроки', "preview": ""},
-            {'course': 2, 'title': '1 урок Python-QA', 'description': 'SkyPro - лучшие тестовые уроки', "preview": ""}
-        ]
-
-        payment_list = [
-            {'user': 1, 'data_pay': '2023-10-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "cash"},  # TODO "method_pay": "cash"
-            {'user': 2, 'data_pay': '2023-09-05 06:42:28.329296 +00:00', 'lesson': 1, "value_pay": 9999, "method_pay": "non_cash"}  # TODO "method_pay": "non_cash"
-        ]
-
         for element in course_list:
             Course.objects.create(**element)
 
+        lesson_list = [
+            {'course': Course.objects.get(id=1), 'title': '1 урок Python-Dev', 'description': 'SkyPro - лучшие уроки',
+             "preview": ""},
+            {'course': Course.objects.get(id=2), 'title': '2 урок Python-QA',
+             'description': 'SkyPro - лучшие тестовые уроки', "preview": ""}
+        ]
+
         for element in lesson_list:
             Lesson.objects.create(**element)
+
+        payment_list = [
+            {'user': User.objects.get(id=1), 'data_pay': timezone.now(),
+             'lesson': Lesson.objects.get(id=1),
+             "value_pay": 9999,
+             "method_pay": "cash"},
+            {'user': User.objects.get(id=2), 'data_pay': timezone.now(),
+             'lesson': Lesson.objects.get(id=2),
+             "value_pay": 9999,
+             "method_pay": "non_cash"}
+        ]
 
         for element in payment_list:
             Payment.objects.create(**element)
