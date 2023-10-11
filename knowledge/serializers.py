@@ -1,11 +1,15 @@
+import stripe
+from django.conf import settings
 from rest_framework import serializers
-
 from knowledge.models import Course, Lesson, Payment, CourseSubscription
+from knowledge.services import gen_random_num
 from knowledge.validators import TitleValidator, UrlYouTubeValidator
+from users.models import User
+
+stripe.api_key = settings.SECRET_KEY_STRIPE
 
 
 class LessonSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Lesson
         fields = '__all__'
@@ -42,13 +46,7 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PaymentSerializer(serializers.ModelSerializer):
+class PaymentSerializer(serializers.Serializer):
     class Meta:
         model = Payment
         fields = '__all__'
-
-# class CourseSubscriptionSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = CourseSubscription
-#         fields = '__all__'

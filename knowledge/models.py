@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+from knowledge.services import gen_random_num
 from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
@@ -64,6 +65,7 @@ class Payment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     value_pay = models.IntegerField(verbose_name="сумма оплаты")
     method_pay = models.BooleanField(choices=METHOD_CHOICES, verbose_name="способ оплаты", blank=True, null=True)
+    payment_intent_id = models.CharField(max_length=255, verbose_name='ID оплаты', default=gen_random_num)
 
     def __str__(self):
         return f"{self.lesson if self.lesson else self.course}"

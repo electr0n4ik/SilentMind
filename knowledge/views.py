@@ -1,14 +1,19 @@
+from datetime import timezone
+
+from django.conf import settings
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from config.settings import SECRET_KEY_STRIPE
 from knowledge.models import Course, Lesson, Payment, CourseSubscription
 from knowledge.paginators import MyPagination
 from knowledge.permissions import IsOwnerOrStaff
-from knowledge.serializers import CourseSerializer, LessonSerializer, \
-    PaymentSerializer  # , CourseSubscriptionSerializer
+from knowledge.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
+
+import stripe
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -44,7 +49,9 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         # Проверяем, не подписан ли пользователь уже на этот курс
         if CourseSubscription.objects.filter(user=user, course=course).exists():
-            return Response({"detail": "User is already subscribed to this course"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "User is already subscribed to this course"},
+                status=status.HTTP_400_BAD_REQUEST)
 
         subscription = CourseSubscription(user=user, course=course)
         subscription.save()
@@ -66,6 +73,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
+
     # permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -96,31 +104,42 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
 
 
-class PaymentListAPIView(generics.ListAPIView):
-    serializer_class = PaymentSerializer
-    queryset = Payment.objects.all()
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('course', 'lesson', 'method_pay')
-    ordering_fields = ('data_pay',)
-
-    def perform_create(self, serializer):
-        new_payment = serializer.save()
-        new_payment.owner = self.request.user
-        new_payment.save()
-
-
 class PaymentCreateAPIView(generics.CreateAPIView):
+    """Создание платежа."""
     serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
 
-# class CourseSubscriptionCreateAPIView(generics.CreateAPIView):
-#     serializer_class = CourseSubscriptionSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def perform_create(self, serializer):
-#         new_sub = serializer.save()
-#         new_sub.owner = self.request.course
-#         new_sub.save()
-#
-#
-# class CourseSubscriptionDestroyAPIView(generics.DestroyAPIView):
-#     queryset = CourseSubscription.objects.all()
+    def create(self, request, *args, **kwargs):
+        amount = 1000
+        currency = 'usd'
+        payment_method_types = ['card']
+        description = 'Оплата курса'
+        statement_descriptor = 'OKPay'
+
+        # Установите API ключ Stripe из настроек Django
+        stripe.api_key = settings.SECRET_KEY_STRIPE
+
+        # Создайте платежный интент
+        intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency=currency,
+            payment_method_types=payment_method_types,
+            description=description,
+            statement_descriptor=statement_descriptor,
+        )
+
+        # client_secret из интента
+        return Response({'client_secret': intent.client_secret})
+
+
+class PaymentRetrieveAPIView(generics.RetrieveAPIView):
+    """Получение платежа."""
+
+    def get(self, request, *args, **kwargs):
+        client_secret = request.query_params.get('client_secret')
+
+        try:
+            intent = stripe.PaymentIntent.retrieve(client_secret)
+            return Response(intent)
+        except stripe.error.StripeError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

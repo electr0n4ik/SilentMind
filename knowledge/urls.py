@@ -23,18 +23,13 @@ urlpatterns = [
                   path('lesson/update/<int:pk>/', views.LessonUpdateAPIView.as_view(), name='lesson-upd'),
                   path('lesson/delete/<int:pk>/', views.LessonDestroyAPIView.as_view(), name='lesson-del'),
 
-                  path('payment/', views.PaymentListAPIView.as_view(), name='payment-list'),
-                  path('payment/create/', views.PaymentCreateAPIView.as_view(), name='payment-create'),
+                  path('payment/', views.PaymentRetrieveAPIView.as_view(), name='retrieve_payment'),
+                  path('payment/create/', views.PaymentCreateAPIView.as_view(), name='create_payment'),
                   path('course/<int:pk>/sub/',
                        views.CourseViewSet.as_view({'post': 'sub'}),
                        name='course-sub'),
                   path('course/<int:pk>/unsub/',
                        views.CourseViewSet.as_view({'post': 'unsub'}),
                        name='course-unsub')
-
-                  # path('sub/', views.CourseSubscriptionCreateAPIView.as_view(), name='course-sub-create'),
-                  # path('sub/delete/<int:pk>/',
-                  # views.CourseSubscriptionDestroyAPIView.as_view(),
-                  # name='course-sub-del'),
 
               ] + router.urls
