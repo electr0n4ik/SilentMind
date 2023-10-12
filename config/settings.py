@@ -178,16 +178,20 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 # Настройки для Celery
 CELERY_BEAT_SCHEDULE = {
-    'task-name': {
-        'task': 'myapp.tasks.my_task',  # Путь к задаче
-        'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
+    'send-notification': {
+        'task': 'knowledge.tasks.send_update_notification',
+        'schedule': timedelta(minutes=1),  # Расписание выполнения задачи (например, каждые 1 минуту)
+    },
+    'block-inactive-users': {
+        'task': 'knowledge.tasks.block_inactive_users',
+        'schedule': timedelta(hours=12),  # Расписание выполнения задачи (например, каждые 12 часов)
     },
 }
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
-# EMAIL_USE_TLS = True
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
