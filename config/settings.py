@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
 
     'users.apps.UsersConfig',
     'knowledge.apps.KnowledgeConfig',
@@ -172,5 +173,10 @@ SIMPLE_JWT = {
 PUBLISHABLE_KEY_STRIPE = os.getenv('PUBLISHABLE_KEY_STRIPE')
 SECRET_KEY_STRIPE = os.getenv('SECRET_KEY_STRIPE')
 
-# Настройте проект для работы с Celery. Также настройте celery-beat для выполнения последующих задач.
-
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'myapp.tasks.my_task',  # Путь к задаче
+        'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+}
