@@ -1,19 +1,18 @@
-from datetime import timezone
-
+from django.utils import timezone
 from django.conf import settings
-from django_filters.rest_framework import DjangoFilterBackend
+from django.http import HttpResponse
 from rest_framework import viewsets, generics, status
-from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from config.settings import SECRET_KEY_STRIPE
-from knowledge.models import Course, Lesson, Payment, CourseSubscription
+from knowledge.models import Course, Lesson, CourseSubscription
 from knowledge.paginators import MyPagination
 from knowledge.permissions import IsOwnerOrStaff
 from knowledge.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
 
 import stripe
+
+from .tasks import send_update_notification
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -22,7 +21,8 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     pagination_class = MyPagination
 
-    # permission_classes = [IsAuthenticated]  # доступ для авторизованных пользователей
+    permission_classes = [IsAuthenticated]  # доступ для авторизованных пользователей
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['user'] = self.request.user
@@ -69,6 +69,22 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         subscription.delete()
         return Response({"detail": "Subscription deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+    def update(self, request, *args, **kwargs):
+        course_id = kwargs.get('pk')
+        course = Course.objects.get(pk=course_id)
+
+        course.last_updated = timezone.now()
+        course.save()
+
+        users = CourseSubscription.objects.filter(subscribed=True, course=course)
+
+        for subscription in users:
+            user = subscription.user
+            email = user.email
+            send_update_notification.delay(email, course.title)
+
+        return HttpResponse("Курс успешно обновлен")
 
 
 class LessonCreateAPIView(generics.CreateAPIView):

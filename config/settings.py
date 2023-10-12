@@ -173,6 +173,9 @@ SIMPLE_JWT = {
 PUBLISHABLE_KEY_STRIPE = os.getenv('PUBLISHABLE_KEY_STRIPE')
 SECRET_KEY_STRIPE = os.getenv('SECRET_KEY_STRIPE')
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
 # Настройки для Celery
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
@@ -180,3 +183,14 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
     },
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+# EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+SERVER_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_ADMIN = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
