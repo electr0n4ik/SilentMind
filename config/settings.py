@@ -172,3 +172,5 @@ SIMPLE_JWT = {
 PUBLISHABLE_KEY_STRIPE = os.getenv('PUBLISHABLE_KEY_STRIPE')
 SECRET_KEY_STRIPE = os.getenv('SECRET_KEY_STRIPE')
 
+# Настройте проект для работы с Celery. Также настройте celery-beat для выполнения последующих задач.
+
