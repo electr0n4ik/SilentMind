@@ -56,7 +56,11 @@ class Command(BaseCommand):
              'lesson': Lesson.objects.get(id=1),
              "value_pay": 9999,
              "method_pay": "cash"},
-            {'user': User.objects.get(id=2), 'data_pay': timezone.now(),
+            {'user': User.objects.get(id=1), 'data_pay': timezone.now() - timezone.timedelta(days=2),
+             'course': Course.objects.get(id=1),
+             "value_pay": 9999,
+             "method_pay": "cash"},
+            {'user': User.objects.get(id=2), 'data_pay': timezone.now() - timezone.timedelta(days=1),
              'lesson': Lesson.objects.get(id=2),
              "value_pay": 9999,
              "method_pay": "non_cash"}

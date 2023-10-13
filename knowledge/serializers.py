@@ -1,10 +1,9 @@
 import stripe
 from django.conf import settings
+from django.core.exceptions import FieldDoesNotExist
 from rest_framework import serializers
 from knowledge.models import Course, Lesson, Payment, CourseSubscription
-from knowledge.services import gen_random_num
 from knowledge.validators import TitleValidator, UrlYouTubeValidator
-from users.models import User
 
 stripe.api_key = settings.SECRET_KEY_STRIPE
 
@@ -47,6 +46,14 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    data_pay = serializers.DateField()
+    method_pay = serializers.CharField()
+    try:
+        lesson_id = serializers.IntegerField()
+    except:
+        course_id = serializers.IntegerField()
+
     class Meta:
         model = Payment
         fields = '__all__'

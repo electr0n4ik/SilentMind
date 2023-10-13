@@ -132,8 +132,20 @@ class PaymentCreateAPIView(generics.CreateAPIView):
         return Response({'client_secret': intent.client_secret})
 
 
+class PaymentListAPIView(generics.ListAPIView):
+    """Получение платежей."""
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ('course', 'lesson', 'method_pay')
+    ordering_fields = ('data_pay',)
+
+
 class PaymentRetrieveAPIView(generics.RetrieveAPIView):
     """Получение платежа."""
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
 
     def get(self, request, *args, **kwargs):
         client_secret = request.query_params.get('client_secret')
