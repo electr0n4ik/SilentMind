@@ -21,7 +21,6 @@ class User(AbstractUser):
         **NULLABLE,
         upload_to='users/avatar',
         verbose_name='аватар')
-    # subscription = models.BooleanField(default=False, verbose_name='подписка')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

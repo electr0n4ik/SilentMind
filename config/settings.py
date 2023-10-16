@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
 
     'users.apps.UsersConfig',
     'knowledge.apps.KnowledgeConfig',
@@ -172,3 +173,28 @@ SIMPLE_JWT = {
 PUBLISHABLE_KEY_STRIPE = os.getenv('PUBLISHABLE_KEY_STRIPE')
 SECRET_KEY_STRIPE = os.getenv('SECRET_KEY_STRIPE')
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'send-notification': {
+        'task': 'knowledge.tasks.send_update_notification',
+        'schedule': timedelta(minutes=1),  # Расписание выполнения задачи (например, каждые 1 минуту)
+    },
+    'block-inactive-users': {
+        'task': 'knowledge.tasks.block_inactive_users',
+        'schedule': timedelta(hours=12),  # Расписание выполнения задачи (например, каждые 12 часов)
+    },
+}
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+SERVER_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_ADMIN = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

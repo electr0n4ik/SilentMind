@@ -34,6 +34,12 @@ class Command(BaseCommand):
         user2.set_password('user2')
         user2.save()
 
+        user3, _ = User.objects.get_or_create(
+            email='andreyshka3@gmail.com'
+        )
+        user3.set_password('user3')
+        user3.save()
+
         course_list = [
             {'title': 'Python-Dev', 'description': 'SkyPro - лучшие курсы', "preview": ""},
             {'title': 'Python-QA', 'description': 'SkyPro - лучшие тесты', "preview": ""}
