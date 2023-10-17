@@ -30,7 +30,7 @@ Afterward, you can install and update Docker from the repository.
 
 Set up Docker's Apt repository.
 
-# Add Docker's official GPG key:
+## Add Docker's official GPG key:
 
 ```shell
 sudo apt-get update
@@ -40,7 +40,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o 
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 ```
 
-# Add the repository to Apt sources:
+## Add the repository to Apt sources:
 
 ```shell
 echo \
@@ -50,7 +50,7 @@ echo \
 sudo apt-get update
 ```
 
-# Install the Docker packages.
+## Install the Docker packages.
 
 Latest Specific version
 
@@ -73,16 +73,27 @@ message and exits.
 
 You have now successfully installed and started Docker Engine.
 
-## docker-compose
-
+# Run Docker
+## Create a Docker Image: 
+```shell
+docker build -t SilentMind .
+```
+## Run the Container:
+```shell
+docker run -it SilentMind
+```
+# Run Docker-compose
+## Building a Docker Image:
 ```shell
 docker-compose build
 ```
 
-```shell
-docker-compose up
-```
-
+## Applying Migrations:
 ```shell
 docker-compose exec app python manage.py migrate
+```
+
+## Running Containers:
+```shell
+docker-compose up
 ```
