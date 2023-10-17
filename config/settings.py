@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': 'silent_mind',
         'USER': 'postgres',
         'PASSWORD': '12345',
-        'HOST': 'db',
+        'HOST': 'silent_mind',
         'PORT': '5432',
     }
 }

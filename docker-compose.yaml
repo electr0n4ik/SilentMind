@@ -6,9 +6,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-          - db
+          - silent_mind
 
-  db:
+  silent_mind:
     image: postgres
     environment:
       POSTGRES_DB: silent_mind
