@@ -9,7 +9,8 @@ class TitleValidator:
         self.field = field
 
     def __call__(self, value):
-        reg = re.compile('^[a-zA-Z0-9.\-\ ]+$')
+        reg = re.compile(r'^[a-zA-Z0-9. ]+$')
+
         tmp_val = dict(value).get(self.field)
         if not bool(reg.match(tmp_val)):
             raise ValidationError('Title is not ok')
