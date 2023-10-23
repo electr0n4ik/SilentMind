@@ -7,9 +7,37 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
+    links:
+      - celery
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings
 
   db:
     image: postgres
     environment:
       POSTGRES_PASSWORD: 12345
       PGDATA: /var/lib/postgresql/data/pgdata
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    command: celery -A app worker -l INFO
+    depends_on:
+      - app
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings
+
+  celery-beat:
+    build: .
+    command: celery -A app beat --loglevel=INFO
+    depends_on:
+      - app
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.settings
