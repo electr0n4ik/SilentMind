@@ -4,3 +4,5 @@ pip install -r requirements.txt
 python3 manage.py migrate
 python3 manage.py put_data
 deactivate
+
+#docker-compose up -d --build
