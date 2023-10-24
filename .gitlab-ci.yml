@@ -4,7 +4,7 @@ Deploy to stage:
   stage: deploy
   script:
     - cp $ENV_STAGE .env
-    - deploy.sh
+    - ./deploy.sh
   only:
     - main
   tags:
