@@ -3,6 +3,7 @@ stages:
 Deploy to stage:
   stage: deploy
   script:
+    - su
     - cp $ENV_STAGE .env
     - ./deploy.sh
   only:
