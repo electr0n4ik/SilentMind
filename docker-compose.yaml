@@ -3,17 +3,21 @@ services:
   app:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     depends_on:
       - db
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=app.settings
+      - celery
+      - celery-beat
 
   db:
     image: postgres
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
       POSTGRES_PASSWORD: 12345
       PGDATA: /var/lib/postgresql/data/pgdata
 
@@ -24,18 +28,17 @@ services:
 
   celery:
     build: .
-    command: celery -A app worker -l INFO
+    command: celery -A config worker -l INFO
     depends_on:
-      - app
       - redis
     environment:
-      - DJANGO_SETTINGS_MODULE=app.settings
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
 
   celery-beat:
     build: .
-    command: celery -A app beat --loglevel=INFO
+    command: celery -A config beat -l INFO #  --loglevel=INFO
     depends_on:
-      - app
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=app.settings
+

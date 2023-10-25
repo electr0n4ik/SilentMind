@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': '12345',
-#        'HOST': 'db',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -180,11 +180,13 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULE = {
     'send-notification': {
         'task': 'knowledge.tasks.send_update_notification',
-        'schedule': timedelta(minutes=1),  # Расписание выполнения задачи (например, каждые 1 минуту)
+        'schedule': timedelta(minutes=1),  # Расписание выполнения
+        # задачи (например, каждые 1 минуту)
     },
     'block-inactive-users': {
         'task': 'knowledge.tasks.block_inactive_users',
-        'schedule': timedelta(hours=12),  # Расписание выполнения задачи (например, каждые 12 часов)
+        'schedule': timedelta(hours=12),  # Расписание выполнения
+        # задачи (например, каждые 12 часов)
     },
 }
 
